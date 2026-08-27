@@ -48,9 +48,15 @@ model Account {
   currency     Currency      @relation(fields: [currencyCode], references: [code])
 }
 
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
 model Category {
-  id     String @id @default(uuid())
+  id     String          @id @default(uuid())
   name   String
+  type   TransactionType
   userId String
 
   createdAt DateTime @default(now())
@@ -58,11 +64,6 @@ model Category {
 
   user         User          @relation(fields: [userId], references: [id])
   transactions Transaction[]
-}
-
-enum TransactionType {
-  INCOME
-  EXPENSE
 }
 
 model Transaction {
