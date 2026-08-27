@@ -51,11 +51,16 @@ model Category {
   transactions Transaction[]
 }
 
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
 model Transaction {
-  id          String  @id @default(uuid())
+  id          String          @id @default(uuid())
   description String
   amount      Decimal
-  type        String
+  type        TransactionType
   accountId   String
   categoryId  String
 
