@@ -8,11 +8,29 @@ async function main() {
     update: {},
     create: {
       code: 'ARS',
-      name: 'Pesos argentinos',
-      symbol: '$.',
+      name: 'Peso argentino',
+      symbol: '$',
     },
   });
-  console.log({ ars });
+  const usd = await prisma.currency.upsert({
+    where: { code: 'USD' },
+    update: {},
+    create: {
+      code: 'USD',
+      name: 'Dólar estadunidense',
+      symbol: 'US$',
+    },
+  });
+  const pen = await prisma.currency.upsert({
+    where: { code: 'PEN' },
+    update: {},
+    create: {
+      code: 'PEN',
+      name: 'Sol peruano',
+      symbol: 'S/',
+    },
+  });
+  console.log({ ars, usd, pen });
 }
 main()
   .then(async () => {
