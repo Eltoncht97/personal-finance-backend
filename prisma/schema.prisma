@@ -68,7 +68,7 @@ model Category {
 
 model Transaction {
   id          String          @id @default(uuid())
-  description String
+  description String?
   amount      Decimal
   type        TransactionType
   accountId   String
