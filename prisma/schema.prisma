@@ -69,7 +69,7 @@ model Category {
 model Transaction {
   id          String          @id @default(uuid())
   description String?
-  amount      Decimal
+  amount      Decimal         @db.Decimal(19, 4)
   type        TransactionType
   accountId   String
   categoryId  String
