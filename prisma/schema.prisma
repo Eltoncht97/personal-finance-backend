@@ -73,6 +73,7 @@ model Transaction {
   type        TransactionType
   accountId   String
   categoryId  String
+  date        DateTime
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
