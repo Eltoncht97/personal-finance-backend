@@ -1,7 +1,8 @@
+import Joi from 'joi';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
-import Joi from 'joi';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import Joi from 'joi';
       }),
     }),
     PrismaModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
