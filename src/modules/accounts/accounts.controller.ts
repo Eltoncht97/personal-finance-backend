@@ -10,15 +10,12 @@ export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
   @Get()
-  getAll(@Req() request: AuthenticatedRequest) {
+  findAll(@Req() request: AuthenticatedRequest) {
     return this.accountsService.findAll(request.user!.sub);
   }
 
   @Post()
-  createAccount(
-    @Req() request: AuthenticatedRequest,
-    @Body() dto: CreateAccountDto,
-  ) {
+  create(@Body() dto: CreateAccountDto, @Req() request: AuthenticatedRequest) {
     return this.accountsService.create(dto, request.user!.sub);
   }
 }

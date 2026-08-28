@@ -3,7 +3,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { AccountRepository } from './repositories/interfaces/account.repository';
 import { PrismaAccountRepository } from './repositories/implementations/prisma-account.repository';
 import { AccountsService } from './accounts.service';
-import { AccountsController } from './accounts.controlle';
+import { AccountsController } from './accounts.controller';
 
 @Module({
   imports: [PrismaModule],
