@@ -1,8 +1,10 @@
 import { Account } from '@prisma/client';
-import { CreateAccountDto } from '../../dto/create-account.dto';
-import { AccountRepository } from '../interfaces/account.repository';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { AccountRepository } from '../interfaces/account.repository';
+import { CreateAccountData } from '../types/create-account-data.type';
 
+@Injectable()
 export class PrismaAccountRepository extends AccountRepository {
   constructor(private readonly prismaService: PrismaService) {
     super();
@@ -14,7 +16,7 @@ export class PrismaAccountRepository extends AccountRepository {
     });
   }
 
-  create(dto: CreateAccountDto, userId: string): Promise<Account> {
-    return this.prismaService.account.create({ data: { ...dto, userId } });
+  create(data: CreateAccountData): Promise<Account> {
+    return this.prismaService.account.create({ data });
   }
 }
