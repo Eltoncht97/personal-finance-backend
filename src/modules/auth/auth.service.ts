@@ -1,16 +1,20 @@
+import * as argon2 from 'argon2';
 import {
   ConflictException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import * as argon2 from 'argon2';
+import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
-import { UserRepository } from '../users/repositories/interfaces/user.repository';
 import { LoginDto } from './dto/login.dto';
+import { UserRepository } from '../users/repositories/interfaces/user.repository';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async register(dto: RegisterDto) {
     const existingUser = await this.userRepository.findByEmail(dto.email);
@@ -54,10 +58,20 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return {
-      id: existingUser.id,
-      name: existingUser.name,
+    const payload = {
+      sub: existingUser.id,
       email: existingUser.email,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    return {
+      accessToken,
+      user: {
+        id: existingUser.id,
+        name: existingUser.name,
+        email: existingUser.email,
+      },
     };
   }
 }
