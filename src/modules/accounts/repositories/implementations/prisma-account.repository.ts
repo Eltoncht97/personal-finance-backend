@@ -10,13 +10,29 @@ export class PrismaAccountRepository extends AccountRepository {
     super();
   }
 
-  findAllByUserId(id: string): Promise<Account[]> {
+  findAllByUserId(userId: string): Promise<Account[]> {
     return this.prismaService.account.findMany({
-      where: { userId: id },
+      where: { userId },
     });
   }
 
-  create(data: CreateAccountData): Promise<Account> {
-    return this.prismaService.account.create({ data });
+  async create(data: CreateAccountData): Promise<Account> {
+    return this.prismaService.$transaction(async (tx) => {
+      if (data.isDefault) {
+        await tx.account.updateMany({
+          where: {
+            userId: data.userId,
+            isDefault: true,
+          },
+          data: {
+            isDefault: false,
+          },
+        });
+      }
+
+      return tx.account.create({
+        data,
+      });
+    });
   }
 }
