@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
@@ -13,6 +14,13 @@ export class RegisterDto {
   @MaxLength(100)
   name!: string;
 
+  @Transform(({ value }: { value: unknown }) => {
+    if (typeof value !== 'string') {
+      return '';
+    }
+
+    return value.trim().toLowerCase();
+  })
   @IsEmail()
   @IsNotEmpty()
   email!: string;
