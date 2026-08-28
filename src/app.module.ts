@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
       validationSchema: Joi.object({
         PORT: Joi.number().default(3000),
         DATABASE_URL: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
       }),
     }),
     PrismaModule,
