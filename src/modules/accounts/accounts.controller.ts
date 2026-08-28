@@ -5,7 +5,7 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 import type { AuthenticatedRequest } from '../auth/types/authenticated-request.type';
 
 @UseGuards(AuthGuard)
-@Controller()
+@Controller('accounts')
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 

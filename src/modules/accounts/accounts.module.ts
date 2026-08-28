@@ -4,9 +4,10 @@ import { AccountRepository } from './repositories/interfaces/account.repository'
 import { PrismaAccountRepository } from './repositories/implementations/prisma-account.repository';
 import { AccountsService } from './accounts.service';
 import { AccountsController } from './accounts.controller';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, AuthModule],
   controllers: [AccountsController],
   providers: [
     AccountsService,
