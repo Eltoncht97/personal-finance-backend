@@ -8,11 +8,12 @@ export class AuthService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async register(dto: RegisterDto) {
-    const existingUser = await this.userRepository.findByEmail(dto.email);
+    const email = dto.email.trim().toLowerCase();
+    const existingUser = await this.userRepository.findByEmail(email);
 
     if (existingUser) {
       throw new ConflictException(
-        `User with email ${dto.email} already registered`,
+        `User with email ${email} already registered`,
       );
     }
 
@@ -22,7 +23,7 @@ export class AuthService {
 
     const user = await this.userRepository.create({
       name: dto.name,
-      email: dto.email,
+      email,
       passwordHash,
     });
 
