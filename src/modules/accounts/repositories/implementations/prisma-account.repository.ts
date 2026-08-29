@@ -19,6 +19,8 @@ export class PrismaAccountRepository extends AccountRepository {
 
   async create(data: CreateAccountData): Promise<AccountWithCurrency> {
     return this.prismaService.$transaction(async (tx) => {
+      const { initialBalance, ...accountData } = data;
+
       if (data.isDefault) {
         await tx.account.updateMany({
           where: {
@@ -31,10 +33,28 @@ export class PrismaAccountRepository extends AccountRepository {
         });
       }
 
-      return tx.account.create({
-        data,
+      const account = await tx.account.create({
+        data:
+          initialBalance && initialBalance > 0
+            ? { ...accountData, balance: initialBalance }
+            : accountData,
         include: { currency: true },
       });
+
+      if (initialBalance && initialBalance > 0) {
+        await tx.transaction.create({
+          data: {
+            type: 'OPENING_BALANCE',
+            amount: initialBalance,
+            description: 'Opening balance',
+            date: new Date(),
+            accountId: account.id,
+            categoryId: null,
+          },
+        });
+      }
+
+      return account;
     });
   }
 }

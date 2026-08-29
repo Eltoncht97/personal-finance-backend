@@ -1,5 +1,12 @@
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class CreateAccountDto {
   @Transform(({ value }: { value: unknown }) => {
@@ -27,4 +34,9 @@ export class CreateAccountDto {
   @IsBoolean()
   @IsOptional()
   isDefault?: boolean;
+
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  initialBalance?: number;
 }
