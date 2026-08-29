@@ -9,22 +9,24 @@ export class DashboardService {
     const startDate = new Date(Date.UTC(year, month - 1, 1));
     const endDate = new Date(Date.UTC(year, month, 1));
 
-    const totals = await this.dashboardRepository.getMonthlyTotals(
-      userId,
-      startDate,
-      endDate,
-    );
+    const [totals, expensesByCategory, recentTransactions] = await Promise.all([
+      this.dashboardRepository.getMonthlyTotals(userId, startDate, endDate),
+      this.dashboardRepository.getExpensesByCategory(
+        userId,
+        startDate,
+        endDate,
+      ),
+      this.dashboardRepository.getRecentTransactions(
+        userId,
+        startDate,
+        endDate,
+        5,
+      ),
+    ]);
 
     const net = totals.income - totals.expenses;
 
     const savingsRate = totals.income > 0 ? (net / totals.income) * 100 : 0;
-
-    const expensesByCategory =
-      await this.dashboardRepository.getExpensesByCategory(
-        userId,
-        startDate,
-        endDate,
-      );
 
     const categoryIds = expensesByCategory.map((item) => item.categoryId);
 
@@ -51,6 +53,7 @@ export class DashboardService {
       net,
       savingsRate,
       expensesByCategory: expensesByCategoryResponse,
+      recentTransactions,
     };
   }
 }

@@ -1,6 +1,7 @@
 import { CategorySummary } from '../types/category-summary.type';
 import { ExpensesByCategory } from '../types/expenses-by-category.type';
 import { MonthlyTotals } from '../types/monthly-totals.type';
+import { RecentTransaction } from '../types/recent-transaction.type';
 
 export abstract class DashboardRepository {
   abstract getMonthlyTotals(
@@ -19,4 +20,11 @@ export abstract class DashboardRepository {
     userId: string,
     categoryIds: string[],
   ): Promise<CategorySummary[]>;
+
+  abstract getRecentTransactions(
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+    limit: number,
+  ): Promise<RecentTransaction[]>;
 }

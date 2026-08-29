@@ -4,6 +4,7 @@ import { DashboardRepository } from '../interfaces/dashboard.repository';
 import { MonthlyTotals } from '../types/monthly-totals.type';
 import { ExpensesByCategory } from '../types/expenses-by-category.type';
 import { CategorySummary } from '../types/category-summary.type';
+import { RecentTransaction } from '../types/recent-transaction.type';
 
 @Injectable()
 export class PrismaDashboardRepository extends DashboardRepository {
@@ -102,5 +103,52 @@ export class PrismaDashboardRepository extends DashboardRepository {
         name: true,
       },
     });
+  }
+
+  async getRecentTransactions(
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+    limit: number,
+  ): Promise<RecentTransaction[]> {
+    const transactions = await this.prismaService.transaction.findMany({
+      where: {
+        account: {
+          userId,
+        },
+        date: {
+          gte: startDate,
+          lt: endDate,
+        },
+      },
+      orderBy: {
+        date: 'desc',
+      },
+      take: limit,
+      include: {
+        account: true,
+        category: true,
+      },
+    });
+
+    return transactions.map((transaction) => ({
+      id: transaction.id,
+      type: transaction.type,
+      amount: Number(transaction.amount),
+      description: transaction.description,
+      date: transaction.date,
+      transferDirection: transaction.transferDirection,
+      account: {
+        id: transaction.account.id,
+        name: transaction.account.name,
+        currencyCode: transaction.account.currencyCode,
+      },
+      category: transaction.category
+        ? {
+            id: transaction.category.id,
+            name: transaction.category.name,
+          }
+        : null,
+    }));
   }
 }
