@@ -40,6 +40,7 @@ model Account {
   currencyCode String
   isDefault    Boolean @default(false)
   userId       String
+  balance      Decimal @default(0) @db.Decimal(19, 4)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -13,6 +13,7 @@ export class AccountsService {
       id: account.id,
       name: account.name,
       isDefault: account.isDefault,
+      balance: account.balance,
       currency: account.currency,
     }));
   }
@@ -24,6 +25,7 @@ export class AccountsService {
       id: account.id,
       name: account.name,
       isDefault: account.isDefault,
+      balance: account.balance,
       currency: account.currency,
     };
   }
