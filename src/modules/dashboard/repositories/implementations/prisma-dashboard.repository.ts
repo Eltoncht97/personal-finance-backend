@@ -1,7 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { DashboardRepository } from '../interfaces/dashboard.repository';
 import { MonthlyTotals } from '../types/monthly-totals.type';
 
+@Injectable()
 export class PrismaDashboardRepository extends DashboardRepository {
   constructor(private readonly prismaService: PrismaService) {
     super();
