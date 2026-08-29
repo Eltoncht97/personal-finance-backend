@@ -1,6 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CategoryRepository } from './repositories/interfaces/category.repository';
 import { CreateCategoryDto } from './dto/create-category';
+import { UpdateCategoryDto } from './dto/update-category';
 
 @Injectable()
 export class CategoriesService {
@@ -16,12 +21,27 @@ export class CategoriesService {
       userId,
     });
 
-    if (!existingCategory) {
+    if (existingCategory) {
       throw new BadRequestException(
         `Category ${dto.name} - ${dto.type} was already created`,
       );
     }
 
     return this.categoryRepository.create({ ...dto, userId });
+  }
+
+  async update(id: string, dto: UpdateCategoryDto, userId: string) {
+    const category = await this.categoryRepository.findByIdAndUserId(
+      id,
+      userId,
+    );
+
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+
+    return this.categoryRepository.update(id, {
+      name: dto.name,
+    });
   }
 }

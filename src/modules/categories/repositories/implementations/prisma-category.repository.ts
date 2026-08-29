@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CategoryRepository } from '../interfaces/category.repository';
 import { CreateCategoryData } from '../types/create-category-data.type';
 import { FindCategoryData } from '../types/find-category-data.type';
+import { UpdateCategoryData } from '../types/update-category-data.type';
 // import { UpdateCategoryDto } from '../../dto/update-category';
 
 @Injectable()
@@ -28,16 +29,18 @@ export class PrismaCategoryRepository extends CategoryRepository {
     });
   }
 
+  findByIdAndUserId(id: string, userId: string): Promise<Category | null> {
+    return this.prismaService.category.findFirst({ where: { id, userId } });
+  }
+
   create(data: CreateCategoryData): Promise<Category> {
     return this.prismaService.category.create({ data });
   }
 
-  // async update(id: string, data: UpdateCategoryDto): Promise<Category> {
-  //   await this.prismaService.category.updateMany({
-  //     where: { id },
-  //     data: { name: data.name },
-  //   });
-
-  //   return this.prismaService.category.findUnique({ where: { id } });
-  // }
+  update(id: string, data: UpdateCategoryData): Promise<Category> {
+    return this.prismaService.category.update({
+      where: { id },
+      data: { name: data.name },
+    });
+  }
 }
