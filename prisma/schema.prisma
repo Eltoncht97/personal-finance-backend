@@ -24,6 +24,7 @@ model User {
 
   accounts   Account[]
   categories Category[]
+  budgets    Budget[]
 }
 
 model Currency {
@@ -66,6 +67,24 @@ model Category {
 
   user         User          @relation(fields: [userId], references: [id])
   transactions Transaction[]
+  budgets      Budget[]
+}
+
+model Budget {
+  id         String  @id @default(uuid())
+  amount     Decimal @db.Decimal(19, 4)
+  year       Int
+  month      Int
+  userId     String
+  categoryId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@unique([userId, categoryId, year, month])
 }
 
 enum TransactionType {

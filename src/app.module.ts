@@ -8,6 +8,7 @@ import { CategoriesModule } from './modules/categories/categories.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { TransfersModule } from './modules/transfers/transfers.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { BudgetsModule } from './modules/budgets/budgets.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     TransactionsModule,
     TransfersModule,
     DashboardModule,
+    BudgetsModule,
   ],
   controllers: [],
   providers: [],
