@@ -19,11 +19,38 @@ export class DashboardService {
 
     const savingsRate = totals.income > 0 ? (net / totals.income) * 100 : 0;
 
+    const expensesByCategory =
+      await this.dashboardRepository.getExpensesByCategory(
+        userId,
+        startDate,
+        endDate,
+      );
+
+    const categoryIds = expensesByCategory.map((item) => item.categoryId);
+
+    const categories = await this.dashboardRepository.findCategoriesByIds(
+      userId,
+      categoryIds,
+    );
+
+    const categoryMap = new Map(
+      categories.map((category) => [category.id, category.name]),
+    );
+
+    const expensesByCategoryResponse = expensesByCategory.map((item) => ({
+      categoryId: item.categoryId,
+      categoryName: categoryMap.get(item.categoryId) ?? 'Unknown',
+      amount: item.amount,
+      percentage:
+        totals.expenses > 0 ? (item.amount / totals.expenses) * 100 : 0,
+    }));
+
     return {
       income: totals.income,
       expenses: totals.expenses,
       net,
       savingsRate,
+      expensesByCategory: expensesByCategoryResponse,
     };
   }
 }
