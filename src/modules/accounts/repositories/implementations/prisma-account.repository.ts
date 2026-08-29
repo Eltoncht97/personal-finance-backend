@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AccountRepository } from '../interfaces/account.repository';
 import { CreateAccountData } from '../types/create-account-data.type';
+import { AccountWithCurrency } from '../types/account-with-currency.type';
 
 @Injectable()
 export class PrismaAccountRepository extends AccountRepository {
@@ -10,9 +11,10 @@ export class PrismaAccountRepository extends AccountRepository {
     super();
   }
 
-  findAllByUserId(userId: string): Promise<Account[]> {
+  findAllByUserId(userId: string): Promise<AccountWithCurrency[]> {
     return this.prismaService.account.findMany({
       where: { userId },
+      include: { currency: true },
     });
   }
 

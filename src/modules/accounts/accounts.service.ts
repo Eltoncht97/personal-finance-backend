@@ -6,11 +6,25 @@ import { CreateAccountDto } from './dto/create-account.dto';
 export class AccountsService {
   constructor(private readonly repository: AccountRepository) {}
 
-  findAll(userId: string) {
-    return this.repository.findAllByUserId(userId);
+  async findAll(userId: string) {
+    const accounts = await this.repository.findAllByUserId(userId);
+
+    return accounts.map((account) => ({
+      id: account.id,
+      name: account.name,
+      isDefault: account.isDefault,
+      currency: account.currency,
+    }));
   }
 
-  create(dto: CreateAccountDto, userId: string) {
-    return this.repository.create({ ...dto, userId });
+  async create(dto: CreateAccountDto, userId: string) {
+    const account = await this.repository.create({ ...dto, userId });
+
+    return {
+      id: account.id,
+      name: account.name,
+      currencyCode: account.currencyCode,
+      isDefault: account.isDefault,
+    };
   }
 }
