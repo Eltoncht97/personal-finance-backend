@@ -49,7 +49,7 @@ model Account {
   currency     Currency      @relation(fields: [currencyCode], references: [code])
 }
 
-enum TransactionType {
+enum CategoryType {
   INCOME
   EXPENSE
 }
@@ -57,7 +57,7 @@ enum TransactionType {
 model Category {
   id     String          @id @default(uuid())
   name   String
-  type   TransactionType
+  type   CategoryType
   userId String
 
   createdAt DateTime @default(now())
@@ -67,18 +67,25 @@ model Category {
   transactions Transaction[]
 }
 
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+  OPENING_BALANCE
+}
+
 model Transaction {
   id          String          @id @default(uuid())
-  description String?
-  amount      Decimal         @db.Decimal(19, 4)
   type        TransactionType
-  accountId   String
-  categoryId  String
+  amount      Decimal         @db.Decimal(19, 4)
+  description String?
   date        DateTime
+  accountId   String
+  categoryId  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  category Category @relation(fields: [categoryId], references: [id])
-  account  Account  @relation(fields: [accountId], references: [id])
+  account  Account   @relation(fields: [accountId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id])
 }
