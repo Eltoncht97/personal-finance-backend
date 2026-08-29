@@ -1,4 +1,3 @@
-import { Account } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AccountRepository } from '../interfaces/account.repository';
@@ -18,7 +17,7 @@ export class PrismaAccountRepository extends AccountRepository {
     });
   }
 
-  async create(data: CreateAccountData): Promise<Account> {
+  async create(data: CreateAccountData): Promise<AccountWithCurrency> {
     return this.prismaService.$transaction(async (tx) => {
       if (data.isDefault) {
         await tx.account.updateMany({
@@ -34,6 +33,7 @@ export class PrismaAccountRepository extends AccountRepository {
 
       return tx.account.create({
         data,
+        include: { currency: true },
       });
     });
   }

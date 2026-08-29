@@ -23,8 +23,8 @@ export class AccountsService {
     return {
       id: account.id,
       name: account.name,
-      currencyCode: account.currencyCode,
       isDefault: account.isDefault,
+      currency: account.currency,
     };
   }
 }
