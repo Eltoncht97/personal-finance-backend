@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  ParseUUIDPipe,
   Post,
   Query,
   Req,
@@ -32,5 +35,13 @@ export class TransactionsController {
     @Req() request: AuthenticatedRequest,
   ) {
     return this.transactionsService.create(dto, request.user!.sub);
+  }
+
+  @Delete(':id')
+  remove(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Req() request: AuthenticatedRequest,
+  ) {
+    return this.transactionsService.remove(id, request.user!.sub);
   }
 }

@@ -2,6 +2,7 @@ import { Account, Category } from '@prisma/client';
 import { CreateTransactionData } from '../types/create-transaction-data.type';
 import { TransactionWithRelations } from '../types/transaction-with-relations.type';
 import { FindTransactionsFilters } from '../types/find-transactions-filters.type';
+import { TransactionForDeletion } from '../types/transaction-for-deletion.type';
 
 export abstract class TransactionRepository {
   abstract findAllByUserId(
@@ -19,4 +20,11 @@ export abstract class TransactionRepository {
   abstract create(
     data: CreateTransactionData,
   ): Promise<TransactionWithRelations>;
+  abstract findByIdAndUserId(
+    id: string,
+    userId: string,
+  ): Promise<TransactionForDeletion | null>;
+  abstract deleteAndReverseBalance(
+    transaction: TransactionForDeletion,
+  ): Promise<void>;
 }

@@ -71,6 +71,34 @@ export class TransactionsService {
     return this.toResponse(transaction);
   }
 
+  async remove(id: string, userId: string) {
+    const transaction = await this.repository.findByIdAndUserId(id, userId);
+
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+
+    if (transaction.type !== 'INCOME' && transaction.type !== 'EXPENSE') {
+      throw new BadRequestException('Transaction type cannot be deleted');
+    }
+
+    const now = new Date();
+    const currentYear = now.getUTCFullYear();
+    const currentMonth = now.getUTCMonth();
+    const startDate = new Date(Date.UTC(currentYear, currentMonth, 1));
+    const endDate = new Date(Date.UTC(currentYear, currentMonth + 1, 1));
+
+    if (transaction.date < startDate || transaction.date >= endDate) {
+      throw new BadRequestException(
+        'Only transactions from the current month can be deleted',
+      );
+    }
+
+    await this.repository.deleteAndReverseBalance(transaction);
+
+    return { success: true };
+  }
+
   private toResponse(transaction: TransactionWithRelations) {
     return {
       id: transaction.id,

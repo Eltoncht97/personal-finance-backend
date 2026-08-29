@@ -5,6 +5,7 @@ import { TransactionRepository } from '../interfaces/transaction.repository';
 import { CreateTransactionData } from '../types/create-transaction-data.type';
 import { TransactionWithRelations } from '../types/transaction-with-relations.type';
 import { FindTransactionsFilters } from '../types/find-transactions-filters.type';
+import { TransactionForDeletion } from '../types/transaction-for-deletion.type';
 
 @Injectable()
 export class PrismaTransactionRepository extends TransactionRepository {
@@ -79,6 +80,43 @@ export class PrismaTransactionRepository extends TransactionRepository {
       });
 
       return transaction;
+    });
+  }
+
+  findByIdAndUserId(
+    id: string,
+    userId: string,
+  ): Promise<TransactionForDeletion | null> {
+    return this.prismaService.transaction.findFirst({
+      where: {
+        id,
+        account: { userId },
+      },
+      select: {
+        id: true,
+        type: true,
+        amount: true,
+        date: true,
+        accountId: true,
+      },
+    });
+  }
+
+  async deleteAndReverseBalance(
+    transaction: TransactionForDeletion,
+  ): Promise<void> {
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.account.update({
+        where: { id: transaction.accountId },
+        data: {
+          balance:
+            transaction.type === 'INCOME'
+              ? { decrement: transaction.amount }
+              : { increment: transaction.amount },
+        },
+      });
+
+      await tx.transaction.delete({ where: { id: transaction.id } });
     });
   }
 }
