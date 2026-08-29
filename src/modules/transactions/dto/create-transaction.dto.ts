@@ -2,11 +2,11 @@ import { Transform } from 'class-transformer';
 import {
   IsDateString,
   IsIn,
-  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
   IsString,
+  IsUUID,
 } from 'class-validator';
 
 export class CreateTransactionDto {
@@ -32,11 +32,9 @@ export class CreateTransactionDto {
   @IsDateString()
   date!: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsUUID()
   accountId!: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsUUID()
   categoryId!: string;
 }
