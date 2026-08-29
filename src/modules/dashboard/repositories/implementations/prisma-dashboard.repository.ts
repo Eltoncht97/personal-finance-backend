@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { DashboardRepository } from '../interfaces/dashboard.repository';
 import { MonthlyTotals } from '../types/monthly-totals.type';
 import { ExpensesByCategory } from '../types/expenses-by-category.type';
+import { CategorySummary } from '../types/category-summary.type';
 
 @Injectable()
 export class PrismaDashboardRepository extends DashboardRepository {
@@ -83,5 +84,23 @@ export class PrismaDashboardRepository extends DashboardRepository {
       categoryId: item.categoryId!,
       amount: Number(item._sum.amount ?? 0),
     }));
+  }
+
+  findCategoriesByIds(
+    userId: string,
+    categoryIds: string[],
+  ): Promise<CategorySummary[]> {
+    return this.prismaService.category.findMany({
+      where: {
+        userId,
+        id: {
+          in: categoryIds,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
   }
 }
