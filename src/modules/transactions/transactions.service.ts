@@ -57,6 +57,8 @@ export class TransactionsService {
       amount: transaction.amount,
       description: transaction.description,
       date: transaction.date,
+      transferId: transaction.transferId,
+      transferDirection: transaction.transferDirection,
       account: {
         id: transaction.account.id,
         name: transaction.account.name,

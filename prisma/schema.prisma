@@ -75,14 +75,21 @@ enum TransactionType {
   OPENING_BALANCE
 }
 
+enum TransferDirection {
+  IN
+  OUT
+}
+
 model Transaction {
-  id          String          @id @default(uuid())
-  type        TransactionType
-  amount      Decimal         @db.Decimal(19, 4)
-  description String?
-  date        DateTime
-  accountId   String
-  categoryId  String?
+  id                String             @id @default(uuid())
+  type              TransactionType
+  amount            Decimal            @db.Decimal(19, 4)
+  description       String?
+  date              DateTime
+  accountId         String
+  categoryId        String?
+  transferId        String?
+  transferDirection TransferDirection?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
