@@ -40,6 +40,18 @@ export class CategoriesService {
       throw new NotFoundException('Category not found');
     }
 
+    const duplicatedCategory = await this.categoryRepository.findByNameAndType({
+      name: dto.name,
+      type: category.type,
+      userId,
+    });
+
+    if (duplicatedCategory && duplicatedCategory.id !== id) {
+      throw new BadRequestException(
+        `Category ${dto.name} - ${category.type} was already created`,
+      );
+    }
+
     return this.categoryRepository.update(id, {
       name: dto.name,
     });

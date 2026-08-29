@@ -5,7 +5,6 @@ import { CategoryRepository } from '../interfaces/category.repository';
 import { CreateCategoryData } from '../types/create-category-data.type';
 import { FindCategoryData } from '../types/find-category-data.type';
 import { UpdateCategoryData } from '../types/update-category-data.type';
-// import { UpdateCategoryDto } from '../../dto/update-category';
 
 @Injectable()
 export class PrismaCategoryRepository extends CategoryRepository {
