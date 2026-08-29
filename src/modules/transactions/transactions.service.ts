@@ -6,13 +6,34 @@ import {
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionRepository } from './repositories/interfaces/transaction.repository';
 import { TransactionWithRelations } from './repositories/types/transaction-with-relations.type';
+import { TransactionsQueryDto } from './dto/transactions-query.dto';
+import { FindTransactionsFilters } from './repositories/types/find-transactions-filters.type';
 
 @Injectable()
 export class TransactionsService {
   constructor(private readonly repository: TransactionRepository) {}
 
-  async findAll(userId: string) {
-    const transactions = await this.repository.findAllByUserId(userId);
+  async findAll(query: TransactionsQueryDto, userId: string) {
+    const hasYear = query.year !== undefined;
+    const hasMonth = query.month !== undefined;
+
+    if (hasYear !== hasMonth) {
+      throw new BadRequestException('Year and month must be provided together');
+    }
+
+    const filters: FindTransactionsFilters = {
+      type: query.type,
+      accountId: query.accountId,
+      categoryId: query.categoryId,
+      search: query.search,
+    };
+
+    if (query.year !== undefined && query.month !== undefined) {
+      filters.startDate = new Date(Date.UTC(query.year, query.month - 1, 1));
+      filters.endDate = new Date(Date.UTC(query.year, query.month, 1));
+    }
+
+    const transactions = await this.repository.findAllByUserId(userId, filters);
 
     return transactions.map((transaction) => this.toResponse(transaction));
   }

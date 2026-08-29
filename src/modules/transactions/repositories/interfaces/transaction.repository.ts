@@ -1,9 +1,13 @@
 import { Account, Category } from '@prisma/client';
 import { CreateTransactionData } from '../types/create-transaction-data.type';
 import { TransactionWithRelations } from '../types/transaction-with-relations.type';
+import { FindTransactionsFilters } from '../types/find-transactions-filters.type';
 
 export abstract class TransactionRepository {
-  abstract findAllByUserId(userId: string): Promise<TransactionWithRelations[]>;
+  abstract findAllByUserId(
+    userId: string,
+    filters: FindTransactionsFilters,
+  ): Promise<TransactionWithRelations[]>;
   abstract findAccountByIdAndUserId(
     id: string,
     userId: string,
